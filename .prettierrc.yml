@@ -1,0 +1,17 @@
+printWidth: 88
+tabWidth: 2
+useTabs: false
+semi: true
+trailingComma: all
+bracketSpacing: true
+arrowParens: always
+endOfLine: lf
+embeddedLanguageFormatting: auto
+singleAttributePerLine: true
+plugins:
+  - "@ianvs/prettier-plugin-sort-imports"
+importOrder:
+  - ^[^/@.](.*)$
+  - ^@[^/](.*)$
+  - ^@\/(.*)$
+  - ^[./]
