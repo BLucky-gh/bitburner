@@ -1,7 +1,7 @@
 // Just an FYI to anyone reading this file: I have never used js classes before,
 // just raw objects with TS types, I just wanted some stronger typing this time
 
-import type { NS } from "@ns";
+import type { NS, RunOptions, ScriptArg } from "@ns";
 
 export class ServerTree {
   root: Server;
@@ -84,6 +84,36 @@ export class Server {
     }
 
     return [this, ...this.children.flatMap((child) => child.traverse())];
+  }
+
+  nuke() {
+    if (this.#ns.fileExists("BruteSSH.exe")) this.#ns.brutessh(this.name);
+    if (this.#ns.fileExists("FTPCrack.exe")) this.#ns.ftpcrack(this.name);
+    if (this.#ns.fileExists("RelaySMTP.exe")) this.#ns.relaysmtp(this.name);
+    if (this.#ns.fileExists("HTTPWorm.exe")) this.#ns.httpworm(this.name);
+    if (this.#ns.fileExists("SQLInject.exe")) this.#ns.sqlinject(this.name);
+    this.#ns.nuke(this.name);
+  }
+
+  scp(files: string | Array<string>, source?: string) {
+    this.#ns.scp(files, this.name, source);
+  }
+
+  exec(
+    script: string,
+    opts: "max" | number | RunOptions,
+    ...args: Array<ScriptArg>
+  ): number {
+    const scriptRam = this.#ns.getScriptRam(script);
+    if (scriptRam > this.freeRam) return -1;
+    if (opts === "max")
+      return this.#ns.exec(
+        script,
+        this.name,
+        Math.floor(this.freeRam / scriptRam),
+        ...args,
+      );
+    else return this.#ns.exec(script, this.name, opts, ...args);
   }
 
   toJSON() {
