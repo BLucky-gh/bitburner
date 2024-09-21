@@ -13,11 +13,16 @@ export class ServerTree {
 export class Server {
   readonly name: string;
   readonly parentName: string | null;
+
   readonly ram: number;
+  readonly numPortsRequired: number;
+
   readonly maxMoney: number;
   readonly minSecurity: number;
   readonly growthParam: number;
+
   readonly children: Array<Server>;
+
   readonly #ns: NS;
 
   get money(): number {
@@ -47,15 +52,15 @@ export class Server {
   constructor(name: string, parentName: string | null, ns: NS) {
     this.name = name;
     this.parentName = parentName;
-    this.#ns = ns;
 
-    this.growthParam = this.#ns.getServerGrowth(name);
-
-    this.ram = this.#ns.getServerMaxRam(name);
+    this.ram = ns.getServerMaxRam(name);
+    this.numPortsRequired = ns.getServerNumPortsRequired(name);
 
     this.maxMoney = ns.getServerMaxMoney(name);
     this.minSecurity = ns.getServerMinSecurityLevel(name);
+    this.growthParam = ns.getServerGrowth(name);
 
+    this.#ns = ns;
     this.children = this.#queryChildren();
   }
 
@@ -66,8 +71,8 @@ export class Server {
       .map((name) => new Server(name, this.name, this.#ns));
   }
 
-  flattenTree(): Array<Server> {
-    return [this, ...this.children.flatMap((child) => child.flattenTree())];
+  traverse(): Array<Server> {
+    return [this, ...this.children.flatMap((child) => child.traverse())];
   }
 
   toJSON() {
