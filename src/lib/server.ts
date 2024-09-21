@@ -72,6 +72,17 @@ export class Server {
   }
 
   traverse(): Array<Server> {
+    let thisLevel: Array<Server> = [this];
+    let nextLevel: Array<Server>;
+    const out = [];
+
+    while (thisLevel.length > 0) {
+      nextLevel = thisLevel.flatMap(({ children }) => children);
+      out.push(...thisLevel);
+      thisLevel = nextLevel;
+      nextLevel = [];
+    }
+
     return [this, ...this.children.flatMap((child) => child.traverse())];
   }
 
