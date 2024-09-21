@@ -49,6 +49,10 @@ export class Server {
     return this.ram - this.usedRam;
   }
 
+  get hasRootAccess() {
+    return this.#ns.hasRootAccess(this.name);
+  }
+
   constructor(name: string, parentName: string | null, ns: NS) {
     this.name = name;
     this.parentName = parentName;

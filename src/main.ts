@@ -7,7 +7,10 @@ export async function main(ns: NS): Promise<void> {
 
   const list = serverTree
     .traverse()
-    .filter(({ numPortsRequired }) => numPortsRequired <= 2);
+
+    .filter(
+      ({ numPortsRequired, hasRootAccess }) => numPortsRequired <= 2 || hasRootAccess,
+    );
 
   list.sort(({ maxMoney: a }, { maxMoney: b }) => b - a);
 
