@@ -21,6 +21,8 @@ export class Server {
   readonly minSecurity: number;
   readonly growthParam: number;
 
+  readonly requiredHackingLevel: number;
+
   readonly children: Array<Server>;
 
   readonly #ns: NS;
@@ -63,6 +65,8 @@ export class Server {
     this.maxMoney = ns.getServerMaxMoney(name);
     this.minSecurity = ns.getServerMinSecurityLevel(name);
     this.growthParam = ns.getServerGrowth(name);
+
+    this.requiredHackingLevel = ns.getServerRequiredHackingLevel(name);
 
     this.#ns = ns;
     this.children = this.#queryChildren();
