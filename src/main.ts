@@ -1,10 +1,29 @@
 import type { NS } from "@ns";
-import { Server } from "./lib/tree";
+import { Server } from "./lib/server";
 
 export async function main(ns: NS): Promise<void> {
   const serverTree = new Server("home", null, ns);
+  console.log("bean");
 
-  ns.tprint(serverTree.flattenTree().map(({ name }) => name));
+  const list = serverTree
+    .traverse()
+    .filter(({ numPortsRequired }) => numPortsRequired <= 2);
+
+  list.sort(({ maxMoney: a }, { maxMoney: b }) => b - a);
+
+  list.forEach((srv) => {
+    // const { name, maxMoney, growthParam, numPortsRequired } = srv;
+    srv.nuke();
+
+    const payload = "payloads/simple.js";
+
+    srv.scp(payload);
+    srv.exec(payload, "max", list[0].name);
+
+    // ns.tprint(
+    //   JSON.stringify({ name, maxMoney, growthParam, numPortsRequired }, null, 2),
+    // );
+  });
 
   // ns.tprint(JSON.stringify(serverTree, null, 2));
 }
